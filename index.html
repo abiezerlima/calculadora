@@ -186,6 +186,7 @@
     let calculosAtuais = { mrr: 0, implantacao: 0, arr: 0, usuarios: 0, processos: 0 };
 
     ZOHO.embeddedApp.on("PageLoad", function(data) {
+        console.log("PageLoad Data do Zoho:", data);
         if (data && data.EntityId) {
             currentDealId = data.EntityId;
         }
@@ -269,16 +270,19 @@
     }
 
     function perguntarSalvar() {
+        console.log("Current Deal ID no momento do clique:", currentDealId);
         if (!currentDealId) {
             ZOHO.CRM.UI.Record.getDetails().then(function(response) {
+                console.log("Resposta de getDetails:", response);
                 if (response && response.data && response.data[0]) {
                     currentDealId = response.data[0].id;
                     executarSalvarNoZoho();
                 } else {
-                    alert("Erro: ID da negociação não detectado. Abra o widget dentro de um registro de Negócio.");
+                    alert("DEBUG: ID da negociação não encontrado nem via getDetails().");
                 }
-            }).catch(function() {
-                alert("Erro ao recuperar o ID do registro ativo.");
+            }).catch(function(err) {
+                console.error("Erro em getDetails:", err);
+                alert("DEBUG: Falha ao buscar ID do registro: " + JSON.stringify(err));
             });
             return;
         }
@@ -289,7 +293,6 @@
         let confirmar = confirm("Deseja salvar este cálculo e atualizar os campos oficiais na negociação?");
         if (!confirmar) return;
 
-        // Mapeamento rigoroso com os nomes de API exatos do Zoho CRM
         var config = {
             Entity: "Deals",
             APIData: {
@@ -302,13 +305,16 @@
             }
         };
 
+        console.log("Enviando payload para Zoho API:", config);
+
         ZOHO.CRM.API.updateRecord(config).then(function(data){
-            console.log("Sucesso no update:", data);
+            console.log("Sucesso completo na API do Zoho:", data);
             alert("Cálculo salvo e campos atualizados com sucesso no CRM!");
             ZOHO.CRM.UI.Popup.close();
         }).catch(function(error){
-            console.error("Erro detalhado na API do Zoho:", error);
-            alert("Erro ao atualizar o registro no Zoho CRM. Verifique se os campos exatos de API existem no módulo de Deals.");
+            console.error("Erro cru retornado pela API do Zoho:", error);
+            // DEBUG EXPLICITO: Mostra o erro exato que o Zoho devolveu no alerta da tela
+            alert("DEBUG ERRO API ZOHO:\n" + JSON.stringify(error, null, 2));
         });
     }
 </script>
