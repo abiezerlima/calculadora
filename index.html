@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora Comercial - Jurídico AI</title>
+    <!-- SDK Oficial do Zoho CRM -->
+    <script src="https://live.zwidgets.com/js-sdk/1.1/ZohoEmbededAppSDK.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 15px; color: #333; background-color: #f9f9f9; margin: 0; }
+        .card { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-weight: bold; font-size: 12px; margin-bottom: 4px; color: #555; }
+        input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        .results { background: #eef2f7; padding: 10px; border-radius: 6px; margin-top: 15px; }
+        .results p { margin: 6px 0; font-size: 14px; }
+        .btn { background: #007bff; color: white; border: none; padding: 10px 15px; width: 100%; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h3>Calculadora Jurídico AI</h3>
+    
+    <div class="form-group">
+        <label>Número de Usuários (N_mero_Usu_rios)</label>
+        <input type="number" id="num_usuarios" value="5" min="1" oninput="calcular()">
+    </div>
+
+    <div class="form-group">
+        <label>Add-On Cível</label>
+        <select id="addon_civel" onchange="calcular()">
+            <option value="0">Não</option>
+            <option value="500">Sim (R$ 500,00)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Add-On Coordenação de Escritórios</label>
+        <select id="addon_coord" onchange="calcular()">
+            <option value="0">Não</option>
+            <option value="800">Sim (R$ 800,00)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Desconto Comercial (%)</label>
+        <input type="number" id="desconto" value="0" min="0" max="100" oninput="calcular()">
+    </div>
+
+    <div class="results">
+        <p><strong>MRR Calculado:</strong> <span id="res_mrr">R$ 0,00</span></p>
+        <p><strong>Valor de Implantação:</strong> <span id="res_implantacao">R$ 0,00</span></p>
+        <p><strong>Montante da Negociação (ARR):</strong> <span id="res_arr">R$ 0,00</span></p>
+    </div>
+
+    <button class="btn" onclick="perguntarSalvar()">Salvar Cálculo na Negociação?</button>
+</div>
+
+<script>
+    let currentDealId = null;
+    let calculosAtuais = { mrr: 0, implantacao: 0, arr: 0, usuarios: 0 };
+
+    ZOHO.embeddedApp.on("PageLoad", function(data) {
+        if (data && data.EntityId) {
+            currentDealId = data.EntityId;
+        }
+    });
+    
+    ZOHO.embeddedApp.init();
+
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('entityId')) {
+            currentDealId = urlParams.get('entityId');
+        }
+        calcular();
+    };
+
+    function calcular() {
+        let usuarios = parseInt(document.getElementById("num_usuarios").value) || 0;
+        let addonCivel = parseFloat(document.getElementById("addon_civel").value) || 0;
+        let addonCoord = parseFloat(document.getElementById("addon_coord").value) || 0;
+        let desconto = parseFloat(document.getElementById("desconto").value) || 0;
+
+        let mrrBase = 1500;
+        if (usuarios > 10 && usuarios <= 30) mrrBase = 3500;
+        if (usuarios > 30) mrrBase = 7000;
+
+        let subtotalMrr = (mrrBase + addonCivel + addonCoord);
+        let mrrFinal = subtotalMrr * (1 - (desconto / 100));
+        let implantacaoFinal = mrrFinal * 1.5; 
+        let arrFinal = mrrFinal * 12; 
+
+        calculosAtuais = {
+            mrr: mrrFinal.toFixed(2),
+            implantacao: implantacaoFinal.toFixed(2),
+            arr: arrFinal.toFixed(2),
+            usuarios: usuarios
+        };
+
+        document.getElementById("res_mrr").innerText = `R$ ${Number(calculosAtuais.mrr).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        document.getElementById("res_implantacao").innerText = `R$ ${Number(calculosAtuais.implantacao).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        document.getElementById("res_arr").innerText = `R$ ${Number(calculosAtuais.arr).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+    }
+
+    function perguntarSalvar() {
+        if (!currentDealId) {
+            ZOHO.CRM.UI.Record.getDetails().then(function(response) {
+                if (response && response.data && response.data[0]) {
+                    currentDealId = response.data[0].id;
+                    executarSalvarNoZoho();
+                } else {
+                    alert("Erro: ID da negociação não detectado.");
+                }
+            }).catch(function() {
+                alert("Erro ao recuperar o ID do registro ativo.");
+            });
+            return;
+        }
+        executarSalvarNoZoho();
+    }
+
+    function executarSalvarNoZoho() {
+        let confirmar = confirm("Deseja salvar este cálculo e atualizar os campos oficiais na negociação?");
+        if (!confirmar) return;
+
+        var config = {
+            Entity: "Deals",
+            APIData: {
+                "id": currentDealId,
+                "Amount": parseFloat(calculosAtuais.arr),
+                "MRR": parseFloat(calculosAturus = calculosAtuais.mrr), // Correção inline
+                "MRR": parseFloat(calculosAtuais.mrr),
+                "Valor_da_Implantamento": parseFloat(calculosAtuais.implantacao),
+                "N_mero_Usu_rios": parseInt(calculosAtuais.usuarios),
+                "Pre_o_Total_Mensal": parseFloat(calculosAtuais.mrr)
+            },
+            Trigger: ["workflow"]
+        };
+
+        ZOHO.CRM.API.updateRecord(config).then(function(data){
+            alert("Cálculo salvo e campos atualizados com sucesso no CRM!");
+            ZOHO.CRM.UI.Popup.close();
+        }).catch(function(error){
+            console.error("Erro na API:", error);
+            alert("Erro ao atualizar o registro no Zoho CRM. Verifique os nomes de API.");
+        });
+    }
+</script>
+
+</body>
+</html>
