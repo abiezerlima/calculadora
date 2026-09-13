@@ -217,7 +217,6 @@
         let usaAddonEstFed = parseFloat(document.getElementById("addon_est_fed").value) > 0;
         let desconto = parseFloat(document.getElementById("desconto").value) || 0;
 
-        // 1. Preço base por processo ativo e novo conforme módulo V4
         let precoBaseAtivo = 6.30;
         let precoBaseNovo = 21.00;
         if (modulo === 2) {
@@ -229,7 +228,6 @@
             precoBaseNovo = 156.00;
         }
 
-        // 2. Curva de volume contínua (ICP = 1000, multi = 1.05, expoente = 0.85, teto = 3.50)
         let indiceVolume = 1.05 * Math.pow((processos / 1000), 0.85);
         if (indiceVolume > 3.50) indiceVolume = 3.50;
         if (processos <= 0) indiceVolume = 0;
@@ -241,7 +239,6 @@
         let custoProcessosAtivos = processos * (precoBaseAtivo + addAtivoCoord + addAtivoEstFed) * indiceVolume * multSegmento;
         let custoProcessosNovos = novosProcs * (precoBaseNovo + addNovoEstFed);
 
-        // 3. Faixas de usuários (Valor fixo somado à mensalidade)
         let custoUsuarios = 0;
         if (usuarios <= 10) {
             custoUsuarios = 500;
@@ -253,27 +250,22 @@
             custoUsuarios = 1900 + ((usuarios - 50) * 38);
         }
 
-        // 4. MRR Bruto e com Desconto
         let mrrBruto = custoProcessosAtivos + custoProcessosNovos + custoUsuarios;
         let mrrFinal = mrrBruto * (1 - (desconto / 100));
-
-        // 5. Valor de Implantação
         let implantacaoFinal = mrrFinal * 1.5; 
-
-        // 6. Montante Anual (ARR / Amount)
         let arrFinal = mrrFinal * 12;
 
         calculosAtuais = {
-            mrr: mrrFinal.toFixed(2),
-            implantacao: implantacaoFinal.toFixed(2),
-            arr: arrFinal.toFixed(2),
+            mrr: Number(mrrFinal.toFixed(2)),
+            implantacao: Number(implantacaoFinal.toFixed(2)),
+            arr: Number(arrFinal.toFixed(2)),
             usuarios: usuarios,
             processos: processos
         };
 
-        document.getElementById("res_mrr").innerText = `R$ ${Number(calculosAtuais.mrr).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-        document.getElementById("res_implantacao").innerText = `R$ ${Number(calculosAtuais.implantacao).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-        document.getElementById("res_arr").innerText = `R$ ${Number(calculosAtuais.arr).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        document.getElementById("res_mrr").innerText = `R$ ${calculosAtuais.mrr.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        document.getElementById("res_implantacao").innerText = `R$ ${calculosAtuais.implantacao.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        document.getElementById("res_arr").innerText = `R$ ${calculosAtuais.arr.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     }
 
     function perguntarSalvar() {
@@ -283,7 +275,7 @@
                     currentDealId = response.data[0].id;
                     executarSalvarNoZoho();
                 } else {
-                    alert("Erro: ID da negociação não detectado.");
+                    alert("Erro: ID da negociação não detectado. Abra o widget dentro de um registro de Negócio.");
                 }
             }).catch(function() {
                 alert("Erro ao recuperar o ID do registro ativo.");
@@ -297,25 +289,26 @@
         let confirmar = confirm("Deseja salvar este cálculo e atualizar os campos oficiais na negociação?");
         if (!confirmar) return;
 
+        // Mapeamento rigoroso com os nomes de API exatos do Zoho CRM
         var config = {
             Entity: "Deals",
             APIData: {
                 "id": currentDealId,
-                "Amount": parseFloat(calculosAtuais.arr),
-                "MRR": parseFloat(calculosAtuais.mrr),
-                "Valor_da_Implantamento": parseFloat(calculosAtuais.implantacao),
-                "N_mero_Usu_rios": parseInt(calculosAtuais.usuarios),
-                "Pre_o_Total_Mensal": parseFloat(calculosAtuais.mrr)
-            },
-            Trigger: ["workflow"]
+                "Amount": calculosAtuais.arr,
+                "MRR": calculosAtuais.mrr,
+                "Valor_da_Implantamento": calculosAtuais.implantacao,
+                "N_mero_Usu_rios": calculosAtuais.usuarios,
+                "Pre_o_Total_Mensal": calculosAtuais.mrr
+            }
         };
 
         ZOHO.CRM.API.updateRecord(config).then(function(data){
+            console.log("Sucesso no update:", data);
             alert("Cálculo salvo e campos atualizados com sucesso no CRM!");
             ZOHO.CRM.UI.Popup.close();
         }).catch(function(error){
-            console.error("Erro na API:", error);
-            alert("Erro ao atualizar o registro no Zoho CRM. Verifique os nomes de API.");
+            console.error("Erro detalhado na API do Zoho:", error);
+            alert("Erro ao atualizar o registro no Zoho CRM. Verifique se os campos exatos de API existem no módulo de Deals.");
         });
     }
 </script>
