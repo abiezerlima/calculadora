@@ -3,75 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <title>Calculadora Comercial - Jurídico AI</title>
-    <!-- SDK Oficial do Zoho CRM -->
     <script src="https://live.zwidgets.com/js-sdk/1.1/ZohoEmbededAppSDK.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; padding: 15px; color: #333; background-color: #f9f9f9; margin: 0; }
-        .card { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .form-group { margin-bottom: 12px; }
-        label { display: block; font-weight: bold; font-size: 12px; margin-bottom: 4px; color: #555; }
-        input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-        .results { background: #eef2f7; padding: 10px; border-radius: 6px; margin-top: 15px; }
-        .results p { margin: 6px 0; font-size: 14px; }
-        .btn { background: #007bff; color: white; border: none; padding: 10px 15px; width: 100%; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        .btn:hover { background: #0056b3; }
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --result-bg: #f1f5f9;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            padding: 16px;
+            color: var(--text-main);
+            background-color: var(--bg-color);
+            margin: 0;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        h3 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+        .hint {
+            font-weight: 400;
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fff;
+            color: var(--text-main);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+        .results {
+            background: var(--result-bg);
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        .results p {
+            margin: 8px 0;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .results span {
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            width: 100%;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 16px;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background: var(--primary-hover);
+        }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h3>Calculadora Jurídico AI (Planilha V4)</h3>
-    
-    <div class="form-group">
-        <label>Módulo Contratado</label>
-        <select id="modulo" onchange="calcular()">
-            <option value="1">Módulo 1 (R$ 6,30 / proc.)</option>
-            <option value="2" selected>Módulo 2 (R$ 11,35 / proc.)</option>
-            <option value="3">Módulo 3 (R$ 35,00 / proc.)</option>
-        </select>
-    </div>
+<div class="container">
+    <div class="card">
+        <h3>Calculadora Comercial — Jurídico AI</h3>
+        
+        <div class="form-group">
+            <label for="modulo">Módulo Contratado</label>
+            <select id="modulo" onchange="calcular()">
+                <option value="1">Módulo 1 (Base Processo Ativo: R$ 6,30)</option>
+                <option value="2" selected>Módulo 2 (Base Processo Ativo: R$ 11,35)</option>
+                <option value="3">Módulo 3 (Base Processo Ativo: R$ 35,00)</option>
+            </select>
+        </div>
 
-    <div class="form-group">
-        <label>Processos Ativos (Volume Base)</label>
-        <input type="number" id="processos_ativos" value="1000" min="1" oninput="calcular()">
-    </div>
+        <div class="form-group">
+            <label for="processos_ativos">Processos Ativos <span class="hint">(Volume Base)</span></label>
+            <input type="number" id="processos_ativos" value="1000" min="0" oninput="atualizarNovosProcs(); calcular();">
+        </div>
 
-    <div class="form-group">
-        <label>Número de Usuários (N_mero_Usu_rios)</label>
-        <input type="number" id="num_usuarios" value="10" min="1" oninput="calcular()">
-    </div>
+        <div class="form-group">
+            <label for="novos_processos">Novos Processos / Mês <span class="hint">(Entrada Mensal)</span></label>
+            <input type="number" id="novos_processos" value="30" min="0" oninput="calcular()">
+        </div>
 
-    <div class="form-group">
-        <label>Segmento do Cliente</label>
-        <select id="segmento" onchange="calcular()">
-            <option value="0.95">Terceirização de serviços (0.95x)</option>
-            <option value="0.95">Varejo e atacado alimentar (0.95x)</option>
-            <option value="1.00" selected>Varejo / Neutro (1.00x)</option>
-            <option value="1.10">Grandes indústrias (1.10x)</option>
-            <option value="1.00">Outro (1.00x)</option>
-        </select>
-    </div>
+        <div class="form-group">
+            <label for="num_usuarios">Número de Usuários <span class="hint">(API: N_mero_Usu_rios)</span></label>
+            <input type="number" id="num_usuarios" value="10" min="1" oninput="calcular()">
+        </div>
 
-    <div class="form-group">
-        <label>Add-on Coordenação de Escritórios</label>
-        <select id="addon_coord" onchange="calcular()">
-            <option value="0">Não</option>
-            <option value="36.75">Sim (R$ 36,75 por processo ativo)</option>
-        </select>
-    </div>
+        <div class="form-group">
+            <label for="segmento">Segmento do Cliente</label>
+            <select id="segmento" onchange="calcular()">
+                <option value="0.95">Terceirização de Serviços (0.95x)</option>
+                <option value="0.95">Varejo e Atacado Alimentar (0.95x)</option>
+                <option value="1.00" selected>Varejo / Neutro (1.00x)</option>
+                <option value="1.10">Grandes Indústrias (1.10x)</option>
+                <option value="1.00">Outro (1.00x)</option>
+            </select>
+        </div>
 
-    <div class="form-group">
-        <label>Desconto Comercial (%)</label>
-        <input type="number" id="desconto" value="0" min="0" max="100" oninput="calcular()">
-    </div>
+        <div class="form-group">
+            <label for="addon_coord">Add-on Coordenação de Escritórios</label>
+            <select id="addon_coord" onchange="calcular()">
+                <option value="0">Não</option>
+                <option value="36.75">Sim (+ R$ 36,75 por proc. ativo/mês)</option>
+            </select>
+        </div>
 
-    <div class="results">
-        <p><strong>MRR Calculado (MRR):</strong> <span id="res_mrr">R$ 0,00</span></p>
-        <p><strong>Valor de Implantação (Implanta_o):</strong> <span id="res_implantacao">R$ 0,00</span></p>
-        <p><strong>Montante da Negociação - ARR (Amount):</strong> <span id="res_arr">R$ 0,00</span></p>
-    </div>
+        <div class="form-group">
+            <label for="addon_est_fed">Add-on Estadual e Federal</label>
+            <select id="addon_est_fed" onchange="calcular()">
+                <option value="0">Não</option>
+                <option value="1.575">Sim (+ R$ 1,575 proc. ativo + R$ 10,50 proc. novo)</option>
+            </select>
+        </div>
 
-    <button class="btn" onclick="perguntarSalvar()">Salvar Cálculo na Negociação?</button>
+        <div class="form-group">
+            <label for="desconto">Desconto Comercial (%)</label>
+            <input type="number" id="desconto" value="0" min="0" max="100" oninput="calcular()">
+        </div>
+
+        <div class="results">
+            <p>MRR Calculado (MRR): <span id="res_mrr">R$ 0,00</span></p>
+            <p>Valor de Implantação (Implanta_o): <span id="res_implantacao">R$ 0,00</span></p>
+            <p>Montante da Negociação (Amount): <span id="res_arr">R$ 0,00</span></p>
+        </div>
+
+        <button class="btn" onclick="perguntarSalvar()">Salvar Cálculo na Negociação?</button>
+    </div>
 </div>
 
 <script>
@@ -90,28 +197,49 @@
         if (urlParams.get('entityId')) {
             currentDealId = urlParams.get('entityId');
         }
+        atualizarNovosProcs();
         calcular();
     };
+
+    function atualizarNovosProcs() {
+        let processos = parseFloat(document.getElementById("processos_ativos").value) || 0;
+        let novosSugeridos = Math.round(processos * 0.03);
+        document.getElementById("novos_processos").value = novosSugeridos;
+    }
 
     function calcular() {
         let modulo = parseInt(document.getElementById("modulo").value);
         let processos = parseFloat(document.getElementById("processos_ativos").value) || 0;
+        let novosProcs = parseFloat(document.getElementById("novos_processos").value) || 0;
         let usuarios = parseInt(document.getElementById("num_usuarios").value) || 0;
         let multSegmento = parseFloat(document.getElementById("segmento").value) || 1.0;
         let valorAddonCoord = parseFloat(document.getElementById("addon_coord").value) || 0;
+        let usaAddonEstFed = parseFloat(document.getElementById("addon_est_fed").value) > 0;
         let desconto = parseFloat(document.getElementById("desconto").value) || 0;
 
-        // 1. Preço base por processo conforme a planilha V4
-        let precoBaseProc = 6.30;
-        if (modulo === 2) precoBaseProc = 11.35;
-        if (modulo === 3) precoBaseProc = 35.00;
+        // 1. Preço base por processo ativo e novo conforme módulo V4
+        let precoBaseAtivo = 6.30;
+        let precoBaseNovo = 21.00;
+        if (modulo === 2) {
+            precoBaseAtivo = 11.35;
+            precoBaseNovo = 70.90;
+        }
+        if (modulo === 3) {
+            precoBaseAtivo = 35.00;
+            precoBaseNovo = 156.00;
+        }
 
         // 2. Curva de volume contínua (ICP = 1000, multi = 1.05, expoente = 0.85, teto = 3.50)
         let indiceVolume = 1.05 * Math.pow((processos / 1000), 0.85);
         if (indiceVolume > 3.50) indiceVolume = 3.50;
         if (processos <= 0) indiceVolume = 0;
 
-        let custoProcessos = processos * (precoBaseProc + valorAddonCoord) * indiceVolume * multSegmento;
+        let addAtivoCoord = valorAddonCoord; 
+        let addAtivoEstFed = usaAddonEstFed ? 1.575 : 0;
+        let addNovoEstFed = usaAddonEstFed ? 10.50 : 0;
+
+        let custoProcessosAtivos = processos * (precoBaseAtivo + addAtivoCoord + addAtivoEstFed) * indiceVolume * multSegmento;
+        let custoProcessosNovos = novosProcs * (precoBaseNovo + addNovoEstFed);
 
         // 3. Faixas de usuários (Valor fixo somado à mensalidade)
         let custoUsuarios = 0;
@@ -126,10 +254,10 @@
         }
 
         // 4. MRR Bruto e com Desconto
-        let mrrBruto = custoProcessos + custoUsuarios;
+        let mrrBruto = custoProcessosAtivos + custoProcessosNovos + custoUsuarios;
         let mrrFinal = mrrBruto * (1 - (desconto / 100));
 
-        // 5. Valor de Implantação (regra proporcional de setup)
+        // 5. Valor de Implantação
         let implantacaoFinal = mrrFinal * 1.5; 
 
         // 6. Montante Anual (ARR / Amount)
