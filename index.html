@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Calculadora Comercial - Jurídico AI</title>
+    <!-- SDK Oficial do Zoho CRM -->
     <script src="https://live.zwidgets.com/js-sdk/1.1/ZohoEmbededAppSDK.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; padding: 15px; color: #333; background-color: #f9f9f9; margin: 0; }
@@ -22,7 +23,7 @@
     <h3>Calculadora Jurídico AI (Planilha V4)</h3>
     
     <div class="form-group">
-        <label>Módulo de Contratado</label>
+        <label>Módulo Contratado</label>
         <select id="modulo" onchange="calcular()">
             <option value="1">Módulo 1 (R$ 6,30 / proc.)</option>
             <option value="2" selected>Módulo 2 (R$ 11,35 / proc.)</option>
@@ -31,7 +32,7 @@
     </div>
 
     <div class="form-group">
-        <label>Processos Ativos (Volume de Referência)</label>
+        <label>Processos Ativos (Volume Base)</label>
         <input type="number" id="processos_ativos" value="1000" min="1" oninput="calcular()">
     </div>
 
@@ -52,7 +53,7 @@
     </div>
 
     <div class="form-group">
-        <label>Add-on Coordenação de Escritórios?</label>
+        <label>Add-on Coordenação de Escritórios</label>
         <select id="addon_coord" onchange="calcular()">
             <option value="0">Não</option>
             <option value="36.75">Sim (R$ 36,75 por processo ativo)</option>
@@ -65,9 +66,9 @@
     </div>
 
     <div class="results">
-        <p><strong>MRR Calculado:</strong> <span id="res_mrr">R$ 0,00</span></p>
-        <p><strong>Valor de Implantação:</strong> <span id="res_implantacao">R$ 0,00</span></p>
-        <p><strong>Montante da Negociação (ARR - Amount):</strong> <span id="res_arr">R$ 0,00</span></p>
+        <p><strong>MRR Calculado (MRR):</strong> <span id="res_mrr">R$ 0,00</span></p>
+        <p><strong>Valor de Implantação (Implanta_o):</strong> <span id="res_implantacao">R$ 0,00</span></p>
+        <p><strong>Montante da Negociação - ARR (Amount):</strong> <span id="res_arr">R$ 0,00</span></p>
     </div>
 
     <button class="btn" onclick="perguntarSalvar()">Salvar Cálculo na Negociação?</button>
@@ -100,7 +101,7 @@
         let valorAddonCoord = parseFloat(document.getElementById("addon_coord").value) || 0;
         let desconto = parseFloat(document.getElementById("desconto").value) || 0;
 
-        // 1. Preço base por processo conforme o módulo
+        // 1. Preço base por processo conforme a planilha V4
         let precoBaseProc = 6.30;
         if (modulo === 2) precoBaseProc = 11.35;
         if (modulo === 3) precoBaseProc = 35.00;
@@ -110,7 +111,6 @@
         if (indiceVolume > 3.50) indiceVolume = 3.50;
         if (processos <= 0) indiceVolume = 0;
 
-        // Custo por processos ativos com curva e segmento
         let custoProcessos = processos * (precoBaseProc + valorAddonCoord) * indiceVolume * multSegmento;
 
         // 3. Faixas de usuários (Valor fixo somado à mensalidade)
@@ -122,18 +122,17 @@
         } else if (usuarios <= 50) {
             custoUsuarios = 1900;
         } else {
-            // Acima de 50: customizado proporcional (ex: R$ 38 por usuário excedente ou base)
             custoUsuarios = 1900 + ((usuarios - 50) * 38);
         }
 
-        // 4. MRR Total antes de desconto
+        // 4. MRR Bruto e com Desconto
         let mrrBruto = custoProcessos + custoUsuarios;
         let mrrFinal = mrrBruto * (1 - (desconto / 100));
 
-        // 5. Implantação (exemplo baseado na regra de setup de processos/complexidade)
+        // 5. Valor de Implantação (regra proporcional de setup)
         let implantacaoFinal = mrrFinal * 1.5; 
 
-        // 6. Montante Anual da Negociação (ARR)
+        // 6. Montante Anual (ARR / Amount)
         let arrFinal = mrrFinal * 12;
 
         calculosAtuais = {
