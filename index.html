@@ -23,10 +23,7 @@
             margin: 0;
             box-sizing: border-box;
         }
-        .container {
-            max-width: 480px;
-            margin: 0 auto;
-        }
+        .container { max-width: 480px; margin: 0 auto; }
         .card {
             background: var(--card-bg);
             padding: 20px;
@@ -42,21 +39,9 @@
             border-bottom: 2px solid #e2e8f0;
             padding-bottom: 8px;
         }
-        .form-group {
-            margin-bottom: 14px;
-        }
-        label {
-            display: block;
-            font-weight: 600;
-            font-size: 13px;
-            margin-bottom: 6px;
-            color: var(--text-main);
-        }
-        .hint {
-            font-weight: 400;
-            color: var(--text-muted);
-            font-size: 11px;
-        }
+        .form-group { margin-bottom: 14px; }
+        label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 6px; color: var(--text-main); }
+        .hint { font-weight: 400; color: var(--text-muted); font-size: 11px; }
         input, select {
             width: 100%;
             padding: 10px 12px;
@@ -73,24 +58,9 @@
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
         }
-        .results {
-            background: var(--result-bg);
-            padding: 14px 16px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border: 1px solid #e2e8f0;
-        }
-        .results p {
-            margin: 8px 0;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .results span {
-            font-weight: 700;
-            color: #0f172a;
-        }
+        .results { background: var(--result-bg); padding: 14px 16px; border-radius: 8px; margin-top: 20px; border: 1px solid #e2e8f0; }
+        .results p { margin: 8px 0; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .results span { font-weight: 700; color: #0f172a; }
         .btn {
             background: var(--primary-color);
             color: white;
@@ -104,9 +74,7 @@
             margin-top: 16px;
             transition: background-color 0.2s;
         }
-        .btn:hover {
-            background: var(--primary-hover);
-        }
+        .btn:hover { background: var(--primary-hover); }
     </style>
 </head>
 <body>
@@ -114,7 +82,7 @@
 <div class="container">
     <div class="card">
         <h3>Calculadora Comercial — Jurídico AI</h3>
-        
+
         <div class="form-group">
             <label for="modulo">Módulo Contratado</label>
             <select id="modulo" onchange="calcular()">
@@ -130,7 +98,7 @@
         </div>
 
         <div class="form-group">
-            <label for="novos_processos">Novos Processos / Mês <span class="hint">(Entrada Mensal)</span></label>
+            <label for="novos_processos">Novos Processos / Mês <span class="hint">(sugestão: 3% dos ativos)</span></label>
             <input type="number" id="novos_processos" value="30" min="0" oninput="calcular()">
         </div>
 
@@ -142,11 +110,11 @@
         <div class="form-group">
             <label for="segmento">Segmento do Cliente</label>
             <select id="segmento" onchange="calcular()">
-                <option value="0.95">Terceirização de Serviços (0.95x)</option>
-                <option value="0.95">Varejo e Atacado Alimentar (0.95x)</option>
-                <option value="1.00" selected>Varejo / Neutro (1.00x)</option>
-                <option value="1.10">Grandes Indústrias (1.10x)</option>
-                <option value="1.00">Outro (1.00x)</option>
+                <option value="0.95">Terceirização de Serviços (0,95x)</option>
+                <option value="0.95">Varejo e Atacado Alimentar (0,95x)</option>
+                <option value="1.00" selected>Varejo / Neutro (1,00x)</option>
+                <option value="1.10">Grandes Indústrias (1,10x)</option>
+                <option value="1.00">Outro (1,00x)</option>
             </select>
         </div>
 
@@ -162,7 +130,7 @@
             <label for="addon_est_fed">Add-on Estadual e Federal</label>
             <select id="addon_est_fed" onchange="calcular()">
                 <option value="0">Não</option>
-                <option value="1.575">Sim (+ R$ 1,575 proc. ativo + R$ 10,50 proc. novo)</option>
+                <option value="1">Sim (+ R$ 1,575 proc. ativo/mês + R$ 10,50 proc. novo)</option>
             </select>
         </div>
 
@@ -172,9 +140,14 @@
         </div>
 
         <div class="results">
-            <p>MRR Calculado: <span id="res_mrr">R$ 0,00</span></p>
-            <p>Valor de Implantação: <span id="res_implantacao">R$ 0,00</span></p>
-            <p>Montante da Negociação (ARR): <span id="res_arr">R$ 0,00</span></p>
+            <p>Valor do Módulo (mensal): <span id="res_modulo">R$ 0,00</span></p>
+            <p>Addon Coordenação (mensal): <span id="res_addon_coord">R$ 0,00</span></p>
+            <p>Addon Estadual/Federal (mensal): <span id="res_addon_ef">R$ 0,00</span></p>
+            <p>Valor da Faixa de Usuários: <span id="res_faixa_usuarios">R$ 0,00</span></p>
+            <p><strong>Preço Total Mensal (MRR):</strong> <span id="res_mrr">R$ 0,00</span></p>
+            <p><strong>Preço Total Anual (ARR):</strong> <span id="res_arr">R$ 0,00</span></p>
+            <p>Prazo Estimado de Implementação: <span id="res_prazo">0 dias</span></p>
+            <p><strong>Valor da Implementação:</strong> <span id="res_implantacao">R$ 0,00</span></p>
         </div>
 
         <button class="btn" onclick="perguntarSalvar()">Salvar Cálculo na Negociação?</button>
@@ -183,29 +156,28 @@
 
 <script>
     let currentDealId = null;
-    let calculosAtuais = { mrr: 0, implantacao: 0, arr: 0, usuarios: 0, processos: 0 };
+    let calculosAtuais = {};
 
-    ZOHO.embeddedApp.on("PageLoad", function(data) {
+    ZOHO.embeddedApp.on("PageLoad", function (data) {
         console.log("PageLoad Data do Zoho:", data);
-        if (data && data.EntityId) {
-            currentDealId = data.EntityId;
-        }
+        if (data && data.EntityId) currentDealId = data.EntityId;
     });
     ZOHO.embeddedApp.init();
 
-    window.onload = function() {
+    window.onload = function () {
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('entityId')) {
-            currentDealId = urlParams.get('entityId');
-        }
+        if (urlParams.get('entityId')) currentDealId = urlParams.get('entityId');
         atualizarNovosProcs();
         calcular();
     };
 
     function atualizarNovosProcs() {
         let processos = parseFloat(document.getElementById("processos_ativos").value) || 0;
-        let novosSugeridos = Math.round(processos * 0.03);
-        document.getElementById("novos_processos").value = novosSugeridos;
+        document.getElementById("novos_processos").value = Math.round(processos * 0.03);
+    }
+
+    function fmt(v) {
+        return `R$ ${Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
     }
 
     function calcular() {
@@ -214,75 +186,89 @@
         let novosProcs = parseFloat(document.getElementById("novos_processos").value) || 0;
         let usuarios = parseInt(document.getElementById("num_usuarios").value) || 0;
         let multSegmento = parseFloat(document.getElementById("segmento").value) || 1.0;
-        let valorAddonCoord = parseFloat(document.getElementById("addon_coord").value) || 0;
+        let usaAddonCoord = parseFloat(document.getElementById("addon_coord").value) > 0;
         let usaAddonEstFed = parseFloat(document.getElementById("addon_est_fed").value) > 0;
         let desconto = parseFloat(document.getElementById("desconto").value) || 0;
 
-        let precoBaseAtivo = 6.30;
-        let precoBaseNovo = 21.00;
-        if (modulo === 2) {
-            precoBaseAtivo = 11.35;
-            precoBaseNovo = 70.90;
-        }
-        if (modulo === 3) {
-            precoBaseAtivo = 35.00;
-            precoBaseNovo = 156.00;
-        }
+        // 1. Preço base por processo (ativo e novo) conforme o módulo
+        let precoBaseAtivo = 6.30, precoBaseNovo = 21.00;
+        if (modulo === 2) { precoBaseAtivo = 11.35; precoBaseNovo = 70.90; }
+        if (modulo === 3) { precoBaseAtivo = 35.00; precoBaseNovo = 156.00; }
 
-        let indiceVolume = 1.05 * Math.pow((processos / 1000), 0.85);
-        if (indiceVolume > 3.50) indiceVolume = 3.50;
-        if (processos <= 0) indiceVolume = 0;
+        // 2. Curva de volume contínua (ICP=1000, mult=1.05, expoente=0.85, teto=3.50)
+        let indiceVolume = processos > 0 ? Math.min(1.05 * Math.pow(processos / 1000, 0.85), 3.50) : 0;
 
-        let addAtivoCoord = valorAddonCoord; 
-        let addAtivoEstFed = usaAddonEstFed ? 1.575 : 0;
-        let addNovoEstFed = usaAddonEstFed ? 10.50 : 0;
+        // 3. Valor do Módulo: processos ativos e novos entram JUNTOS na curva,
+        //    exatamente como na planilha (Valor do módulo = (ativo+novo) x índice x segmento)
+        let valorModulo = (processos * precoBaseAtivo + novosProcs * precoBaseNovo) * indiceVolume * multSegmento;
 
-        let custoProcessosAtivos = processos * (precoBaseAtivo + addAtivoCoord + addAtivoEstFed) * indiceVolume * multSegmento;
-        let custoProcessosNovos = novosProcs * (precoBaseNovo + addNovoEstFed);
+        // 4. Addons (mesma lógica: aplicam sobre a base de processos ativos/novos, com índice e segmento)
+        let valorAddonCoord = usaAddonCoord
+            ? (processos * 36.75) * indiceVolume * multSegmento
+            : 0;
+        let valorAddonEstFed = usaAddonEstFed
+            ? ((processos * 1.575 + novosProcs * 10.50)) * indiceVolume * multSegmento
+            : 0;
 
-        let custoUsuarios = 0;
-        if (usuarios <= 10) {
-            custoUsuarios = 500;
-        } else if (usuarios <= 30) {
-            custoUsuarios = 1200;
-        } else if (usuarios <= 50) {
-            custoUsuarios = 1900;
-        } else {
-            custoUsuarios = 1900 + ((usuarios - 50) * 38);
-        }
+        // 5. Faixas de usuários (valor fixo somado à mensalidade, nunca cai)
+        let valorFaixaUsuarios = 0;
+        if (usuarios <= 10) valorFaixaUsuarios = 500;
+        else if (usuarios <= 30) valorFaixaUsuarios = 1200;
+        else if (usuarios <= 50) valorFaixaUsuarios = 1900;
+        else valorFaixaUsuarios = usuarios * 38; // 51+: volume customizado, usuário real x R$38
 
-        let mrrBruto = custoProcessosAtivos + custoProcessosNovos + custoUsuarios;
-        let mrrFinal = mrrBruto * (1 - (desconto / 100));
-        let implantacaoFinal = mrrFinal * 1.5; 
+        // 6. MRR / ARR
+        let mrrBruto = valorModulo + valorAddonCoord + valorAddonEstFed + valorFaixaUsuarios;
+        let mrrFinal = mrrBruto * (1 - desconto / 100);
         let arrFinal = mrrFinal * 12;
 
+        // 7. Prazo de implementação por volume histórico (usar processos ativos como proxy se não houver campo próprio)
+        let volumeHistorico = processos;
+        let prazoDias = 20;
+        if (volumeHistorico > 8000) prazoDias = 60;
+        else if (volumeHistorico > 4000) prazoDias = 50;
+        else if (volumeHistorico > 1000) prazoDias = 35;
+
+        // 8. Múltiplo de implementação escalando com o prazo (2,5x a 3,0x, conforme a planilha)
+        let multiploImplantacao = 2.5 + (prazoDias / 60) * 0.5;
+        let valorImplementacao = mrrFinal * multiploImplantacao;
+
         calculosAtuais = {
+            valorModulo: Number(valorModulo.toFixed(2)),
+            valorAddonCoord: Number(valorAddonCoord.toFixed(2)),
+            valorAddonEstFed: Number(valorAddonEstFed.toFixed(2)),
+            valorFaixaUsuarios: Number(valorFaixaUsuarios.toFixed(2)),
             mrr: Number(mrrFinal.toFixed(2)),
-            implantacao: Number(implantacaoFinal.toFixed(2)),
             arr: Number(arrFinal.toFixed(2)),
-            usuarios: usuarios,
-            processos: processos
+            prazoDias: prazoDias,
+            valorImplementacao: Number(valorImplementacao.toFixed(2)),
+            usuarios: usuarios
         };
 
-        document.getElementById("res_mrr").innerText = `R$ ${calculosAtuais.mrr.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-        document.getElementById("res_implantacao").innerText = `R$ ${calculosAtuais.implantacao.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-        document.getElementById("res_arr").innerText = `R$ ${calculosAtuais.arr.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        document.getElementById("res_modulo").innerText = fmt(calculosAtuais.valorModulo);
+        document.getElementById("res_addon_coord").innerText = fmt(calculosAtuais.valorAddonCoord);
+        document.getElementById("res_addon_ef").innerText = fmt(calculosAtuais.valorAddonEstFed);
+        document.getElementById("res_faixa_usuarios").innerText = fmt(calculosAtuais.valorFaixaUsuarios);
+        document.getElementById("res_mrr").innerText = fmt(calculosAtuais.mrr);
+        document.getElementById("res_arr").innerText = fmt(calculosAtuais.arr);
+        document.getElementById("res_prazo").innerText = `${calculosAtuais.prazoDias} dias`;
+        document.getElementById("res_implantacao").innerText = fmt(calculosAtuais.valorImplementacao);
     }
 
     function perguntarSalvar() {
-        console.log("Current Deal ID no momento do clique:", currentDealId);
+        console.log("Deal ID no momento do clique:", currentDealId);
         if (!currentDealId) {
-            ZOHO.CRM.UI.Record.getDetails().then(function(response) {
-                console.log("Resposta de getDetails:", response);
+            ZOHO.CRM.UI.Record.getDetails().then(function (response) {
+                console.log("Resposta getDetails:", response);
                 if (response && response.data && response.data[0]) {
                     currentDealId = response.data[0].id;
                     executarSalvarNoZoho();
                 } else {
-                    alert("DEBUG: ID da negociação não encontrado nem via getDetails().");
+                    alert("Erro: ID da negociação não detectado. Abra o widget dentro de um registro de Negócio.");
                 }
-            }).catch(function(err) {
+            }).catch(function (err) {
                 console.error("Erro em getDetails:", err);
-                alert("DEBUG: Falha ao buscar ID do registro: " + JSON.stringify(err));
+                alert("Falha ao buscar o ID do registro ativo.");
             });
             return;
         }
@@ -293,28 +279,31 @@
         let confirmar = confirm("Deseja salvar este cálculo e atualizar os campos oficiais na negociação?");
         if (!confirmar) return;
 
+        // API Names REAIS confirmados no CRM (Deals)
         var config = {
             Entity: "Deals",
             APIData: {
                 "id": currentDealId,
+                "Valor_Mensal_do_M_dulo": calculosAtuais.valorModulo,
+                "Valor_Addon_Coordena_o": calculosAtuais.valorAddonCoord,
+                "Valor_Addon_Estadual_Federal": calculosAtuais.valorAddonEstFed,
+                "Valor_Faixa_de_Usu_rios": calculosAtuais.valorFaixaUsuarios,
+                "Pre_o_Total_Mensal": calculosAtuais.mrr,
                 "Amount": calculosAtuais.arr,
-                "MRR": calculosAtuais.mrr,
-                "Valor_da_Implantamento": calculosAtuais.implantacao,
-                "N_mero_Usu_rios": calculosAtuais.usuarios,
-                "Pre_o_Total_Mensal": calculosAtuais.mrr
+                "Prazo_Estimado_de_Implementa_o_Dias": calculosAtuais.prazoDias,
+                "Valor_da_Implementa_o": calculosAtuais.valorImplementacao
             }
         };
 
         console.log("Enviando payload para Zoho API:", config);
 
-        ZOHO.CRM.API.updateRecord(config).then(function(data){
-            console.log("Sucesso completo na API do Zoho:", data);
+        ZOHO.CRM.API.updateRecord(config).then(function (data) {
+            console.log("Sucesso no update:", data);
             alert("Cálculo salvo e campos atualizados com sucesso no CRM!");
             ZOHO.CRM.UI.Popup.close();
-        }).catch(function(error){
+        }).catch(function (error) {
             console.error("Erro cru retornado pela API do Zoho:", error);
-            // DEBUG EXPLICITO: Mostra o erro exato que o Zoho devolveu no alerta da tela
-            alert("DEBUG ERRO API ZOHO:\n" + JSON.stringify(error, null, 2));
+            alert("Erro ao atualizar o registro. Detalhe técnico:\n" + JSON.stringify(error, null, 2));
         });
     }
 </script>
