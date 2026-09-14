@@ -300,6 +300,9 @@
         };
 
         console.log("Enviando payload para Zoho API:", config);
+        console.log("Tipo e valor de currentDealId:", typeof currentDealId, currentDealId);
+        alert("DEBUG - payload que será enviado:\n" + JSON.stringify(config, null, 2) +
+              "\n\ntypeof id: " + typeof currentDealId);
 
         ZOHO.CRM.API.updateRecord(config).then(function (data) {
             console.log("Sucesso no update:", data);
