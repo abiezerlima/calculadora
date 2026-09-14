@@ -160,7 +160,10 @@
 
     ZOHO.embeddedApp.on("PageLoad", function (data) {
         console.log("PageLoad Data do Zoho:", data);
-        if (data && data.EntityId) currentDealId = data.EntityId;
+        // EntityId vem como array (ex.: ["4876876000000488001"]), mesmo em tela de detalhe
+        if (data && data.EntityId) {
+            currentDealId = String(Array.isArray(data.EntityId) ? data.EntityId[0] : data.EntityId);
+        }
     });
     ZOHO.embeddedApp.init();
 
@@ -258,10 +261,11 @@
     function perguntarSalvar() {
         console.log("Deal ID no momento do clique:", currentDealId);
         if (!currentDealId) {
+            // IMPORTANTE: getDetails() retorna { Entity, RecordID } - NÃO { data: [{ id }] }
             ZOHO.CRM.UI.Record.getDetails().then(function (response) {
                 console.log("Resposta getDetails:", response);
-                if (response && response.data && response.data[0]) {
-                    currentDealId = response.data[0].id;
+                if (response && response.RecordID) {
+                    currentDealId = String(response.RecordID);
                     executarSalvarNoZoho();
                 } else {
                     alert("Erro: ID da negociação não detectado. Abra o widget dentro de um registro de Negócio.");
